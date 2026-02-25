@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/api" }
+  ],
+  "env": {
+    "DB_PATH": "/tmp/subscriptions.db"
+  }
+}

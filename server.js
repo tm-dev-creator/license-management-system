@@ -36,8 +36,13 @@ app.use((err, req, res, next) => {
   res.status(500).json({ success: false, message: 'Internal server error' });
 });
 
-app.listen(config.port, () => {
-  console.log(`Server running at http://localhost:${config.port}`);
-  console.log('  Frontend auth: POST /api/customer/login, /api/admin/login, /api/customer/signup');
-  console.log('  SDK auth:      POST /sdk/auth/login (returns API key)');
-});
+// Only listen when run directly (not when required by Vercel serverless)
+if (require.main === module) {
+  app.listen(config.port, () => {
+    console.log(`Server running at http://localhost:${config.port}`);
+    console.log('  Frontend auth: POST /api/customer/login, /api/admin/login, /api/customer/signup');
+    console.log('  SDK auth:      POST /sdk/auth/login (returns API key)');
+  });
+}
+
+module.exports = app;
