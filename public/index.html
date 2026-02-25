@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>License Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #060608;
+      --bg-elevated: rgba(255, 255, 255, 0.04);
+      --bg-card: rgba(255, 255, 255, 0.06);
+      --bg-card-hover: rgba(255, 255, 255, 0.1);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.14);
+      --text: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --text-faint: #71717a;
+      --accent: #22d3ee;
+      --accent-hover: #67e8f9;
+      --accent-dim: rgba(34, 211, 238, 0.15);
+      --accent-glow: rgba(34, 211, 238, 0.35);
+      --success: #4ade80;
+      --success-dim: rgba(74, 222, 128, 0.18);
+      --error: #f87171;
+      --error-dim: rgba(248, 113, 113, 0.14);
+      --warn: #fbbf24;
+      --radius: 20px;
+      --radius-sm: 14px;
+      --radius-pill: 999px;
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.5);
+      --transition: 0.25s ease;
+      --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      background: var(--bg);
+      background-image:
+        radial-gradient(ellipse 120% 80% at 50% -40%, rgba(34, 211, 238, 0.12), transparent 55%),
+        radial-gradient(ellipse 80% 60% at 100% 0%, rgba(34, 211, 238, 0.06), transparent 50%),
+        radial-gradient(ellipse 70% 50% at 0% 100%, rgba(34, 211, 238, 0.05), transparent 50%),
+        radial-gradient(ellipse 60% 40% at 80% 80%, rgba(99, 102, 241, 0.04), transparent 45%);
+      color: var(--text);
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Animated gradient orbs (subtle) */
+    .page-wrap {
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .page-wrap::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 30% 20%, rgba(34, 211, 238, 0.06) 0%, transparent 40%),
+                  radial-gradient(circle at 70% 80%, rgba(99, 102, 241, 0.05) 0%, transparent 40%);
+      animation: gradientShift 15s ease-in-out infinite alternate;
+      pointer-events: none;
+      z-index: 0;
+    }
+    @keyframes gradientShift {
+      0% { opacity: 0.8; transform: scale(1); }
+      100% { opacity: 1; transform: scale(1.05); }
+    }
+
+    #app { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* ----- Home: full-viewport hero ----- */
+    .hero-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem 2rem 4rem;
+      min-height: 100vh;
+      text-align: center;
+    }
+    .hero-section .hero-buttons { position: relative; }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    .hero-section .hero-buttons .btn:nth-child(1):hover { animation: float 2s ease-in-out infinite; }
+    .hero-section h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      margin: 0 0 0.75rem;
+      background: linear-gradient(135deg, #fff 0%, #a5f3fc 50%, #e0f2fe 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: fadeInUp 0.8s var(--ease-out) backwards, shimmer 6s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+      0%, 100% { background-position: 0% center; }
+      50% { background-position: 100% center; }
+    }
+    .hero-tagline {
+      color: var(--text-muted);
+      font-size: clamp(1rem, 2vw, 1.125rem);
+      margin: 0 0 2.5rem;
+      max-width: 420px;
+      animation: fadeInUp 0.8s var(--ease-out) 0.1s backwards;
+    }
+    .hero-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.875rem;
+      width: 100%;
+      max-width: 360px;
+      animation: fadeInUp 0.8s var(--ease-out) 0.2s backwards;
+    }
+    .hero-buttons .btn {
+      width: 100%;
+      justify-content: center;
+      padding: 1rem 1.5rem;
+      font-size: 1rem;
+      border-radius: var(--radius-sm);
+    }
+    .hero-buttons .btn:nth-child(1) { animation: fadeInUp 0.5s var(--ease-spring) 0.35s backwards; }
+    .hero-buttons .btn:nth-child(2) { animation: fadeInUp 0.5s var(--ease-spring) 0.45s backwards; }
+    .hero-buttons .btn:nth-child(3) { animation: fadeInUp 0.5s var(--ease-spring) 0.55s backwards; }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin: 0 0 1.25rem;
+      color: var(--text);
+    }
+    .section-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-faint);
+      margin: 2rem 0 0.75rem;
+    }
+    .section-title:first-child { margin-top: 0; }
+
+    .hidden { display: none !important; }
+
+    /* ----- Buttons ----- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-family: inherit;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      padding: 0.75rem 1.25rem;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: transform 0.2s var(--ease-out), box-shadow 0.3s var(--ease-out), background 0.25s ease, border-color 0.25s ease, filter 0.25s ease;
+    }
+    .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn:active { transform: translateY(0) scale(0.98); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent) 0%, #06b6d4 100%);
+      color: #0a0a0c;
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+    .btn-primary:hover {
+      box-shadow: 0 8px 32px var(--accent-glow);
+      filter: brightness(1.1);
+    }
+    .btn-ghost {
+      background: var(--bg-elevated);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover {
+      background: var(--bg-card);
+      border-color: var(--border-strong);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+    .btn-danger { background: var(--error-dim); color: var(--error); }
+    .btn-danger:hover { background: rgba(248, 113, 113, 0.22); box-shadow: 0 4px 16px rgba(248, 113, 113, 0.2); }
+    .btn-sm { padding: 0.5rem 1rem; font-size: 0.8125rem; border-radius: 10px; }
+
+    /* ----- Login: full-page centered ----- */
+    .login-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      min-height: 100vh;
+    }
+    #login-form {
+      width: 100%;
+      max-width: 420px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.25rem;
+      box-shadow: var(--shadow-lg);
+      animation: scaleIn 0.5s var(--ease-spring);
+      backdrop-filter: blur(12px);
+    }
+    #login-form:hover { border-color: var(--border-strong); }
+    #login-title { margin-top: 0; margin-bottom: 1.75rem; font-size: 1.35rem; font-family: 'Outfit', sans-serif; }
+    .form-group { margin-bottom: 1.35rem; }
+    .form-group:last-of-type { margin-bottom: 1.5rem; }
+    .form-group label {
+      display: block;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+    input[type="email"],
+    input[type="password"],
+    input[type="text"] {
+      width: 100%;
+      font-family: inherit;
+      font-size: 0.9375rem;
+      padding: 0.875rem 1rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, transform 0.2s ease;
+    }
+    input::placeholder { color: var(--text-faint); }
+    input:hover { background: rgba(255,255,255,0.055); }
+    input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-dim);
+      transform: translateY(-1px);
+    }
+    #form-login .btn-primary { width: 100%; margin-bottom: 0.5rem; }
+    #login-error {
+      color: var(--error);
+      font-size: 0.875rem;
+      margin: 1rem 0 0;
+      padding: 0.75rem 1rem;
+      background: var(--error-dim);
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(248, 113, 113, 0.2);
+      animation: fadeIn 0.3s var(--ease-out);
+    }
+    #back-home { margin-top: 1rem; }
+
+    /* ----- Dashboard: full-width layout ----- */
+    #dashboard {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      animation: fadeIn 0.4s var(--ease-out);
+    }
+    #dashboard nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      padding: 1rem 2rem;
+      background: rgba(0, 0, 0, 0.25);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+    }
+    #user-email {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #dashboard-content {
+      flex: 1;
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    #dashboard-content h2 { animation: fadeInUp 0.5s var(--ease-out); }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 1rem;
+      transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, transform 0.25s var(--ease-out);
+      backdrop-filter: blur(8px);
+    }
+    .card:hover {
+      border-color: var(--border-strong);
+      background: var(--bg-card-hover);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+      transform: translateY(-2px);
+    }
+    .card p { margin: 0; font-size: 0.9375rem; color: var(--text); line-height: 1.6; }
+    .card strong { color: var(--text); font-weight: 600; }
+    .card-label {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-faint);
+      margin-bottom: 0.35rem;
+    }
+    .card-value { font-size: 1rem; color: var(--text); }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.35rem 0.65rem;
+      border-radius: 8px;
+      vertical-align: middle;
+      transition: transform 0.2s var(--ease-out), box-shadow 0.2s ease;
+    }
+    .badge:hover { transform: scale(1.05); }
+    .badge-requested { background: rgba(251, 191, 36, 0.2); color: var(--warn); }
+    .badge-approved { background: var(--accent-dim); color: var(--accent); }
+    .badge-active { background: var(--success-dim); color: var(--success); }
+    .badge-inactive { background: rgba(161, 161, 170, 0.18); color: var(--text-muted); }
+    .badge-expired { background: var(--error-dim); color: var(--error); }
+
+    .request-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-top: 0.5rem;
+      transition: border-color 0.3s ease, transform 0.25s var(--ease-out);
+    }
+    .request-card:hover { border-color: var(--border-strong); }
+    #request-form .form-group { margin-bottom: 1rem; }
+    #request-form .btn { margin-top: 0.25rem; }
+    #dashboard-message {
+      font-size: 0.875rem;
+      padding: 0.875rem 1.25rem;
+      border-radius: var(--radius-sm);
+      margin-top: 1rem;
+      animation: slideInRight 0.4s var(--ease-out);
+    }
+    #dashboard-message:not(.hidden) { display: block; }
+    #dashboard-message.error { background: var(--error-dim); color: var(--error); border: 1px solid rgba(248,113,113,0.2); }
+    #dashboard-message:not(.error) { background: var(--success-dim); color: var(--success); border: 1px solid rgba(74,222,128,0.2); }
+
+    /* Admin */
+    .packs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .pack-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.9375rem;
+      transition: transform 0.25s var(--ease-out), border-color 0.25s ease, background 0.25s ease;
+    }
+    .pack-item:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-strong);
+      background: var(--bg-card);
+    }
+    .pack-item span { color: var(--text-muted); font-size: 0.8125rem; }
+    .sub-card {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .sub-card .meta { flex: 1 1 100%; font-size: 0.875rem; color: var(--text-muted); margin-top: 0.25rem; }
+    .sub-card .actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .sub-card .id-badge { font-weight: 600; color: var(--text); }
+
+    /* Staggered dashboard content animations */
+    #dashboard-content > .card { animation: fadeInUp 0.5s var(--ease-out) backwards; }
+    #dashboard-content > .card:nth-child(3) { animation-delay: 0.05s; }
+    #dashboard-content > .card:nth-child(4) { animation-delay: 0.08s; }
+    #dashboard-content > .card:nth-child(5) { animation-delay: 0.12s; }
+    #dashboard-content > .card:nth-child(6) { animation-delay: 0.16s; }
+    #dashboard-content > .card:nth-child(7) { animation-delay: 0.2s; }
+    #dashboard-content > .card:nth-child(8) { animation-delay: 0.24s; }
+    #dashboard-content > .card:nth-child(n+9) { animation-delay: 0.28s; }
+    #dashboard-content > .card .sub-card { animation: none; }
+    #dashboard-content .request-card { animation: fadeInUp 0.5s var(--ease-out) 0.25s backwards; }
+  </style>
+</head>
+<body>
+  <div class="page-wrap">
+    <div id="app">
+      <div id="home" class="hero-section">
+        <h1>Subscription Management</h1>
+        <p class="hero-tagline">Sign in to manage your account or subscriptions.</p>
+        <div class="hero-buttons">
+          <button type="button" class="btn btn-primary" data-role="customer">Customer Login</button>
+          <button type="button" class="btn btn-ghost" data-role="admin">Admin Login</button>
+          <button type="button" class="btn btn-ghost" data-role="signup">Customer Sign Up</button>
+        </div>
+      </div>
+
+      <div id="login-wrap" class="hidden login-section">
+        <div id="login-form">
+          <h2 id="login-title">Login</h2>
+          <form id="form-login">
+            <div class="form-group">
+              <label for="login-email">Email</label>
+              <input id="login-email" type="email" name="email" required placeholder="you@example.com">
+            </div>
+            <div class="form-group">
+              <label for="login-password">Password</label>
+              <input id="login-password" type="password" name="password" required placeholder="••••••••">
+            </div>
+            <div id="signup-name" class="form-group hidden">
+              <label for="login-name">Name</label>
+              <input id="login-name" type="text" name="name" placeholder="Your name">
+            </div>
+            <button type="submit" class="btn btn-primary">Continue</button>
+          </form>
+          <p id="login-error" class="error hidden"></p>
+          <button type="button" class="btn btn-ghost" id="back-home">Back</button>
+        </div>
+      </div>
+
+      <div id="dashboard" class="hidden">
+      <nav>
+        <span id="user-email"></span>
+        <button type="button" class="btn btn-ghost btn-sm" id="logout">Logout</button>
+      </nav>
+      <div id="dashboard-content"></div>
+      <p id="dashboard-message" class="hidden"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API = window.location.origin;
+    let token = localStorage.getItem('token');
+    let role = localStorage.getItem('role');
+
+    const $ = (id) => document.getElementById(id);
+    const show = (id) => { $(id).classList.remove('hidden'); };
+    const hide = (id) => { $(id).classList.add('hidden'); };
+
+    function showHome() {
+      hide('login-wrap'); hide('dashboard');
+      show('home');
+    }
+
+    let loginMode = 'customer'; // 'customer' | 'admin' | 'signup'
+    function showLogin(title, isSignup = false) {
+      hide('home'); hide('dashboard');
+      loginMode = isSignup ? 'signup' : (title === 'Admin Login' ? 'admin' : 'customer');
+      $('login-title').textContent = title;
+      $('signup-name').classList.toggle('hidden', !isSignup);
+      $('form-login').reset();
+      $('login-error').classList.add('hidden');
+      show('login-wrap');
+    }
+
+    function showDashboard() {
+      hide('home'); hide('login-wrap');
+      $('user-email').textContent = localStorage.getItem('email') || '';
+      show('dashboard');
+      loadDashboard();
+    }
+
+    async function api(path, options = {}) {
+      const headers = { 'Content-Type': 'application/json', ...options.headers };
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+      const res = await fetch(API + path, { ...options, headers });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.message || res.statusText);
+      return data;
+    }
+
+    async function loadDashboard() {
+      const content = $('dashboard-content');
+      if (role === 'admin') {
+        const [customers, packs, subs] = await Promise.all([
+          api('/api/v1/admin/customers'),
+          api('/api/v1/admin/subscription-packs'),
+          api('/api/v1/admin/subscriptions?limit=50'),
+        ]);
+        content.innerHTML = `
+          <h2>Dashboard</h2>
+          <p class="section-title">Subscription Packs</p>
+          <div class="packs-grid">${packs.data.map(p => `
+            <div class="pack-item">
+              <span>${p.name}</span>
+              <span>${p.sku} · $${p.price} / ${p.validity_months}mo</span>
+            </div>
+          `).join('')}</div>
+          <p class="section-title">Subscriptions</p>
+          ${subs.data.map(s => `
+            <div class="card">
+              <div class="sub-card">
+                <span class="id-badge">#${s.id}</span><span class="badge badge-${s.status}">${s.status}</span>
+                <div class="meta">${s.customer_name} · ${s.customer_email} · ${s.pack_sku}</div>
+                <div class="actions">
+                  ${s.status === 'requested' ? `<button type="button" class="btn btn-primary btn-sm" data-id="${s.id}" data-action="approve">Approve</button>` : ''}
+                  ${s.status === 'approved' ? `<button type="button" class="btn btn-primary btn-sm" data-id="${s.id}" data-action="assign">Assign</button>` : ''}
+                  ${s.status === 'active' ? `<button type="button" class="btn btn-danger btn-sm" data-id="${s.id}" data-action="deactivate">Deactivate</button>` : ''}
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        `;
+        content.querySelectorAll('[data-action]').forEach(btn => {
+          btn.onclick = async () => {
+            const id = btn.dataset.id, action = btn.dataset.action;
+            await api(`/api/v1/admin/subscriptions/${id}/${action}`, { method: 'POST' });
+            loadDashboard();
+          };
+        });
+      } else {
+        const [profile, sub] = await Promise.all([
+          api('/api/v1/customer/profile'),
+          api('/api/v1/customer/subscription'),
+        ]);
+        content.innerHTML = `
+          <h2>Dashboard</h2>
+          <p class="section-title">Profile</p>
+          <div class="card">
+            <div class="card-label">Name</div>
+            <div class="card-value">${profile.data.name}</div>
+            <div class="card-label" style="margin-top:0.75rem">Email</div>
+            <div class="card-value">${profile.data.email}</div>
+          </div>
+          <p class="section-title">Current subscription</p>
+          <div class="card">
+            ${sub.data
+              ? `<div class="card-label">Plan</div><div class="card-value">${sub.data.pack_name} <span class="badge badge-${sub.data.status}">${sub.data.status}</span></div>
+                 ${sub.data.expires_at ? `<div class="card-label" style="margin-top:0.75rem">Expires</div><div class="card-value">${sub.data.expires_at}</div>` : ''}`
+              : `<div class="card-value" style="color:var(--text-muted)">No active subscription</div>`
+            }
+          </div>
+          <p class="section-title">Request subscription</p>
+          <div class="request-card">
+            <form id="request-form">
+              <div class="form-group">
+                <label for="request-sku">Pack SKU</label>
+                <input id="request-sku" type="text" name="sku" placeholder="e.g. SKU-BASIC-1M">
+              </div>
+              <button type="submit" class="btn btn-primary">Request</button>
+            </form>
+          </div>
+        `;
+      }
+    }
+
+    function showDashboardMessage(msg, isError) {
+      const el = $('dashboard-message');
+      if (!el) return;
+      el.textContent = msg;
+      el.className = isError ? 'error' : '';
+      el.classList.remove('hidden');
+      setTimeout(() => el.classList.add('hidden'), 5000);
+    }
+
+    $('dashboard-content').addEventListener('submit', async (e) => {
+      const form = e.target;
+      if (form.id !== 'request-form') return;
+      e.preventDefault();
+      const sku = (new FormData(form).get('sku') || '').trim();
+      if (!sku) {
+        showDashboardMessage('Please enter a Pack SKU.', true);
+        return;
+      }
+      try {
+        await api('/api/v1/customer/subscription/request', { method: 'POST', body: JSON.stringify({ sku }) });
+        showDashboardMessage('Subscription requested successfully.');
+        form.reset();
+        loadDashboard();
+      } catch (err) {
+        showDashboardMessage(err.message || 'Request failed.', true);
+      }
+    });
+
+    $('home').querySelectorAll('button').forEach(btn => {
+      btn.onclick = () => {
+        if (btn.dataset.role === 'customer') showLogin('Customer Login');
+        else if (btn.dataset.role === 'admin') showLogin('Admin Login');
+        else showLogin('Sign Up', true);
+      };
+    });
+
+    $('back-home').onclick = showHome;
+
+    $('form-login').onsubmit = async (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const body = { email: fd.get('email'), password: fd.get('password') };
+      if (loginMode === 'signup') body.name = fd.get('name');
+      const path = loginMode === 'signup' ? '/api/customer/signup' : loginMode === 'admin' ? '/api/admin/login' : '/api/customer/login';
+
+      try {
+        const res = await fetch(API + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Login failed');
+        token = data.data.token;
+        role = data.data.user.role;
+        localStorage.setItem('token', token);
+        localStorage.setItem('role', role);
+        localStorage.setItem('email', data.data.user.email);
+        showDashboard();
+      } catch (err) {
+        $('login-error').textContent = err.message;
+        $('login-error').classList.remove('hidden');
+      }
+    };
+
+    $('logout').onclick = () => {
+      token = role = null;
+      localStorage.removeItem('token'); localStorage.removeItem('role'); localStorage.removeItem('email');
+      showHome();
+    };
+
+    if (token && role) showDashboard();
+    else showHome();
+  </script>
+</body>
+</html>
